@@ -1,0 +1,66 @@
+@import "variables";
+
+.help-desk__faq {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    height: 100%;
+
+    .help-desk__search, .help-desk__faq-content {
+        padding: 25px;
+    }
+    .help-desk__search label {
+        display: none;
+    }
+    .help-desk__faq-content {
+        flex: 1;
+        background: #FFF;
+    }
+
+    .category, .category-title, .article-title {
+        display: block;
+        margin-bottom: 20px;
+        font-size: 16px;
+
+        svg {
+            width: 10px;
+            height: 10px;
+            margin-right: 8px;
+            fill: #333;
+        }
+    }
+    .category {
+        .category-title {
+            color: inherit;
+            cursor: pointer;
+    
+            &:hover, &:focus {
+                text-decoration: none;
+                color: $help-desk-menu-background;
+            }
+        }
+        > .items {
+            display: none;
+            margin-left: 30px;
+        }
+
+        &.expanded {
+            > .category-title {
+                font-weight: bold;
+            }
+
+            > .items {
+                display: block;
+            }
+        }
+    }
+    .article-title {
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .empty-state {
+        padding: 30px 0;
+        text-align: center;
+    }
+}

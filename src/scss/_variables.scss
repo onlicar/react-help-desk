@@ -1,0 +1,11 @@
+$help-desk-width: 450px !default;
+
+$help-desk-border-radius: 3px !default;
+$help-desk-menu-background: #318FA9 !default;
+$help-desk-menu-color: #FFF !default;
+$help-desk-header-background: $help-desk-menu-background !default;
+$help-desk-header-color: $help-desk-menu-color !default;
+$help-desk-content-background: desaturate(lighten($help-desk-header-background, 53%), 25%) !default;
+
+$help-desk-duration: 0.4s !default;
+$help-desk-timing: cubic-bezier(0.55, 0, 0.1, 1) !default;

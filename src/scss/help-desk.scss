@@ -1,0 +1,157 @@
+@import "variables";
+
+.help-desk {
+    position: relative;
+
+    .help-desk__menu {
+        position: fixed;
+        z-index: 10000;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+        margin: 0;
+        padding: 10px 15px;
+        box-shadow: 0 5px 16px 0 rgba(#000 , 0.35);
+        border: none;
+        border-radius: 3px 0 0 3px;
+        outline: none;
+        background: $help-desk-menu-background;
+        list-style: none;
+        color: $help-desk-menu-color;
+        transition: all $help-desk-duration $help-desk-timing;
+    }
+
+    .help-desk__content {
+        position: fixed;
+        z-index: 9999;
+        top: 0;
+        bottom: 0;
+        right: -$help-desk-width;
+        width: $help-desk-width;
+        box-shadow: -3px 0 15px 0 rgba(#000, 0.25);
+        background: $help-desk-content-background;
+        transition: all $help-desk-duration $help-desk-timing;
+
+        > div {
+            height: 100%;
+        }
+
+        .help-desk__header {
+            position: relative;
+            padding: 0 25px;
+            background: $help-desk-header-background;
+            box-shadow: 0 1px 1px 0 rgba(#000, 0.1);
+            text-align: center;
+            color: $help-desk-header-color;
+
+            h1 {
+                margin: 0;
+                font-size: 16px;
+                line-height: 48px;
+            }
+            .help-desk__back, .help-desk__close {
+                opacity: 0.6;
+                position: absolute;
+                top: 0;
+                height: 48px;
+                padding: 0 25px;
+                border: none;
+                outline: none;
+                background: none;
+                font-size: 32px;
+                transition: opacity 0.2s;
+
+                svg {
+                    position: relative;
+                    top: -2px;
+                    width: 14px;
+                    height: 14px;
+                    fill: $help-desk-header-color;
+                }
+
+                &:hover, &:focus {
+                    opacity: 1;
+                }
+            }
+            .help-desk__back {
+                left: 0;
+            }
+            .help-desk__close {
+                right: 0;
+            }
+        }
+
+        .help-desk__label {
+            font-weight: normal;
+            text-transform: uppercase;
+            color: #AAA;
+        }
+        .help-desk__input {
+            width: 100%;
+            padding: 14px 60px 14px 14px;
+            border: none;
+            outline: none;
+            border-radius: $help-desk-border-radius;
+            background: #FFF;
+            font: inherit;
+            font-size: 16px;
+            line-height: 1.4;
+            transition: box-shadow 0.25s cubic-bezier(0.55, 0, 0.1, 1);
+
+            &:focus {
+                box-shadow: 0 4px 10px 0 rgba(#000, 0.1);
+            }
+        }
+    }
+
+    .help-desk__widgets {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        padding: 25px 25px 10px;
+
+        .help-desk__widget {
+            width: 33.33%;
+            border: none;
+            outline: none;
+            background: none;
+
+            &:hover, &:focus {
+                .box {
+                    transform: translateY(-4px);
+                    box-shadow: 0 4px 10px 0 rgba(#000, 0.1);
+                    background: $help-desk-header-background;
+                    color: $help-desk-header-color;
+                }
+            }
+
+            .box {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 50px;
+                height: 50px;
+                border-radius: $help-desk-border-radius;
+                box-shadow: 0 1px 1px 0 rgba(#000, 0.1);
+                background: #FFF;
+                color: #333;
+                transition: all 0.25s cubic-bezier(0.55, 0, 0.1, 1);
+            }
+            > p {
+                margin-top: 10px;
+                font-size: 12px;
+                color: #595C5F;
+            }
+        }
+    }
+
+    &.help-desk--expanded {
+        .help-desk__menu {
+            transform: translateX(-$help-desk-width) translateY(-50%);
+            box-shadow: -6px 0 15px 0 rgba(#000, 0.15);
+        }
+        .help-desk__content {
+            transform: translateX(-$help-desk-width);
+        }
+    }
+}
