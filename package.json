@@ -4,9 +4,16 @@
   "description": "💁 React Components for creating a help desk system",
   "main": "dist/index.js",
   "scripts": {
+    "precommit": "lint-staged",
     "prepublish": "npm run build",
     "build": "babel src --out-dir dist && gulp",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --single-quote --write",
+      "git add"
+    ]
   },
   "repository": {
     "type": "git",

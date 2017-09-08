@@ -7,25 +7,25 @@
  * @return {AudioBuffer}
  */
 const bufferLoader = (context, url, progress) => {
-    return new Promise((resolve, reject) => {
-        const request = new XMLHttpRequest();
-        request.open('GET', url, true);
-        request.responseType = 'arraybuffer';
-        request.crossOrigin = 'anonymous';
-        request.onload = () => {
-            context.decodeAudioData(request.response, buffer => resolve(buffer));
-        };
+  return new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.responseType = 'arraybuffer';
+    request.crossOrigin = 'anonymous';
+    request.onload = () => {
+      context.decodeAudioData(request.response, buffer => resolve(buffer));
+    };
 
-        request.onprogress = oEvent => {
-            if(oEvent.lengthComputable && progress) {
-                progress(oEvent.loaded, oEvent.total);
-            }
-        };
+    request.onprogress = oEvent => {
+      if (oEvent.lengthComputable && progress) {
+        progress(oEvent.loaded, oEvent.total);
+      }
+    };
 
-        request.onerror = err => reject(err);
+    request.onerror = err => reject(err);
 
-        request.send();
-    });
+    request.send();
+  });
 };
 
 export default bufferLoader;
