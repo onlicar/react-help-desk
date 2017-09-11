@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import Content from './Content';
-import Header from './Header';
-import Menu from './Menu';
-import Widgets from './Widgets';
-import Widget from './Widget';
+import Content from './components/Content';
+import Header from './components/Header';
+import Menu from './components/Menu';
+import Widgets from './components/Widgets';
+import Widget from './components/Widget';
 
 class HelpDesk extends Component {
   constructor(props) {

@@ -1,0 +1,15 @@
+# EditorConfig - http://EditorConfig.org
+
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+
+[src/js/**.js]
+indent_style = space
+indent_size = 2
+
+[src/scss/**.scss]
+indent_style = space
+indent_size = 4

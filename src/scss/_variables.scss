@@ -9,3 +9,9 @@ $help-desk-content-background: desaturate(lighten($help-desk-header-background, 
 
 $help-desk-duration: 0.4s !default;
 $help-desk-timing: cubic-bezier(0.55, 0, 0.1, 1) !default;
+
+$walkthrough-popover-background: $help-desk-menu-background !default;
+$walkthrough-popover-color: $help-desk-menu-color !default;
+
+$walkthrough-player-background: #EFEFEF !default;
+$walkthrough-player-color: $help-desk-menu-background !default;
