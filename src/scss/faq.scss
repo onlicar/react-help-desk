@@ -3,64 +3,180 @@
 .help-desk__faq {
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
     height: 100%;
+}
 
-    .help-desk__search, .help-desk__faq-content {
-        padding: 25px;
-    }
-    .help-desk__search label {
-        display: none;
-    }
-    .help-desk__faq-content {
-        flex: 1;
-        background: #FFF;
-    }
+.help-desk__search, .help-desk__faq-content {
+    padding: 25px;
+}
+.help-desk__search label {
+    display: none;
+}
+.help-desk__faq-content {
+    flex: 1;
+    overflow: hidden;
+    background: #FFF;
 
-    .category, .category-title, .article-title {
-        display: block;
-        margin-bottom: 20px;
-        font-size: 16px;
-
-        svg {
-            width: 10px;
-            height: 10px;
-            margin-right: 8px;
-            fill: #333;
-        }
-    }
-    .category {
-        .category-title {
-            color: inherit;
-            cursor: pointer;
-    
-            &:hover, &:focus {
-                text-decoration: none;
-                color: $help-desk-menu-background;
-            }
-        }
-        > .items {
-            display: none;
-            margin-left: 30px;
-        }
-
-        &.expanded {
-            > .category-title {
-                font-weight: bold;
-            }
-
-            > .items {
-                display: block;
-            }
-        }
-    }
-    .article-title {
-        text-decoration: underline;
-        cursor: pointer;
-    }
-
-    .empty-state {
-        padding: 30px 0;
-        text-align: center;
+    &.scrollable {
+        overflow: auto;
     }
 }
+
+.help-desk__category, .help-desk__category-title, .help-desk__article-title {
+    display: block;
+    margin-bottom: 20px;
+    font-size: 16px;
+
+    svg {
+        width: 10px;
+        height: 10px;
+        margin-right: 8px;
+        fill: #333;
+    }
+}
+
+.help-desk__category-title {
+    color: inherit;
+    cursor: pointer;
+
+    &:hover, &:focus {
+        text-decoration: none;
+        color: $help-desk-menu-background;
+    }
+}
+
+.help-desk__article-title {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.help-desk__category {
+    > .help-desk__faq-items {
+        display: none;
+        margin-left: 30px;
+    }
+
+    &.expanded {
+        > .help-desk__category-title {
+            font-weight: bold;
+        }
+
+        > .help-desk__faq-items {
+            display: block;
+        }
+    }
+}
+
+.help-desk__article {
+    position: absolute;
+    overflow: auto;
+    top: 48px;
+    left: 25px;
+    right: 0;
+    bottom: 0;
+    padding: 25px;
+    box-shadow: -4px 0 4px rgba(#000, 0.05);
+    background: #F9F9F9;
+    font-size: 16px;
+    line-height: 1.6;
+    animation: 0.2s ease-in-out helpDeskSlideIn;
+    animation-fill-mode: forwards;
+
+    &.exiting {
+        animation: 0.2s ease-in-out helpDeskSlideOut;
+    }
+
+    h4 {
+        margin: 0 0 20px;
+        padding-right: 35px;
+        font-size: 26px;
+    }
+}
+
+.help-desk__thumb-ratings {
+    position: relative;
+    margin: 40px 0 25px;
+    text-align: center;
+
+    &.selected .help-desk__thumb-rating:not(.selected) {
+        opacity: 0.4;
+        pointer-events: none;
+    }
+
+    .help-desk__thanks {
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 16px;
+        color: #999;
+    }
+}
+
+.help-desk__thumb-rating {
+    width: 48px;
+    height: 48px;
+    margin-right: 18px;
+    padding: 10px;
+    border: 3px solid #AAA;
+    border-radius: 50%;
+    background: none;
+    color: #AAA;
+    transition: all 0.2s ease-in-out;
+
+    &:last-child {
+        margin-right: 0;
+    }
+    &.help-desk__thumb-rating--up {
+        border-color: $help-desk-success;
+        color: $help-desk-success;
+
+        &:hover, &:focus, &.selected {
+            background: $help-desk-success;
+            color: #FFF;
+        }
+        
+        svg {
+            position: relative;
+            top: -2px;
+        }
+    }
+    &.help-desk__thumb-rating--down {
+        border-color: $help-desk-danger;
+        color: $help-desk-danger;
+
+        &:hover, &:focus, &.selected {
+            background: $help-desk-danger;
+            color: #FFF;
+        }
+    }
+
+    svg {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+.help-desk__empty-state {
+    padding: 30px 0;
+    text-align: center;
+}
+
+@keyframes helpDeskSlideIn {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes helpDeskSlideOut {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(100%);
+    }
+}
+

@@ -35,26 +35,47 @@
     animation-fill-mode: both;
 
     button {
-        display: flex;
-        align-items: center;
-        min-width: 200px;
-        padding: 15px;
         border: none;
         outline: none;
         background: none;
-        text-align: left;
     }
+}
+
+.walkthrough-popover__option {
+    display: flex;
+    align-items: center;
+    min-width: 200px;
+    padding: 15px;
+    text-align: left;
 
     svg {
         width: 32px;
         height: 32px;
         margin-right: 10px;
     }
-    .walkthrough-popover__title {
-        max-width: 300px;
-        margin: 0;
-        font-size: 18px;
+}
+
+.walkthrough-popover__close {
+    opacity: 0.6;
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    transition: opacity 0.2s ease-in-out;
+
+    &:hover, &:focus {
+        opacity: 0.8;
     }
+
+    svg {
+        width: 11px;
+        height: 11px;
+    }
+}
+
+.walkthrough-popover__title {
+    max-width: 300px;
+    margin: 0;
+    font-size: 18px;
 }
 
 @keyframes zoomIn {
@@ -68,41 +89,62 @@
 }
 
 .walkthrough-player {
+    display: flex;
+    align-items: center;
     position: absolute;
-    left: 0;
-    right: 0;
+    left: 30px;
     bottom: 0;
-    height: 30px;
-    padding: 10px;
+    width: 320px;
+    height: 45px;
+    padding: 10px 15px;
+    border-top-left-radius: $help-desk-border-radius;
+    border-top-right-radius: $help-desk-border-radius;
+    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
     background: $walkthrough-player-background;
     color: $walkthrough-player-color;
     pointer-events: all;
     animation-fill-mode: both;
 
     &.entering {
-        animation: 0.2s slideInUp;
+        animation: 0.2s helpDeskSlideInUp;
     }
     &.exiting {
-        animation: 0.2s slideOutDown;
+        animation: 0.2s helpDeskSlideOutDown;
     }
 
-    .walkthrough-player__wrapper {
-        max-width: 400px;
-        margin: 0 auto;
-    }
-    .walkthrough-player__btn {
-        border: none;
-        outline: none;
-        background: none;
-
-        svg {
-            width: 20px;
-            height: 20px;
+    &.loading {
+        .walkthrough-player__btn svg {
+            animation: 3s helpDeskSpin;
         }
     }
 }
 
-@keyframes slideInUp {
+.walkthrough-player__btn {
+    display: flex;
+    align-items: center;
+    border: none;
+    outline: none;
+    background: none;
+
+    svg {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+.walkthrough-player__progress {
+    flex: 1;
+    height: 4px;
+    margin-left: 8px;
+    background: rgba(#000, 0.05);
+}
+
+.walkthrough-player__progress-bar {
+    height: 4px;
+    background: $help-desk-menu-background;
+}
+
+@keyframes helpDeskSlideInUp {
     from {
         transform: translate3d(0, 100%, 0);
         visibility: visible;
@@ -111,12 +153,20 @@
         transform: translate3d(0, 0, 0);
     }
 }
-@keyframes slideOutDown {
+@keyframes helpDeskSlideOutDown {
     from {
         transform: translate3d(0, 0, 0);
     }
     to {
         visibility: hidden;
         transform: translate3d(0, 100%, 0);
+    }
+}
+@keyframes helpDeskSpin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
     }
 }

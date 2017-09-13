@@ -13,6 +13,8 @@ export default class AudioWalkthrough extends Walkthrough {
     this.clock = new WAAClock(this.audioContext);
     this.events = [];
 
+    this.loading = false;
+    this.playing = false;
     this.bufferNode = null;
     this.buffer = null;
     this.audioStartTime = null;
@@ -29,12 +31,21 @@ export default class AudioWalkthrough extends Walkthrough {
   onComplete(func) {
     this.handleComplete = func;
   }
+  onStart(func) {
+    this.handleStart = func;
+  }
 
   start() {
     // Load the Audio
+    this.loading = true;
     return bufferLoader(this.audioContext, this.walkthrough.audioUrl)
       .then(buffer => {
         this.buffer = buffer;
+        this.loading = false;
+
+        if (this.handleStart) {
+          this.handleStart();
+        }
 
         this.play();
       })
@@ -140,11 +151,32 @@ export default class AudioWalkthrough extends Walkthrough {
     }
   }
 
+  getCurrentTime() {
+    if (this.playing) {
+      return (
+        this.audioContext.currentTime -
+        this.audioStartTime +
+        this.audioCurrentTime
+      );
+    }
+
+    return this.audioCurrentTime;
+  }
+
+  getDuration() {
+    if (this.buffer) {
+      return this.buffer.duration;
+    }
+
+    return 0;
+  }
+
   cancelEvents() {
     this.events.forEach(event => event.clear());
   }
 
   ended() {
+    this.buffer = null;
     this.bufferNode = null;
     this.clock.stop();
     if (typeof this.handleComplete == 'function') {
@@ -155,5 +187,7 @@ export default class AudioWalkthrough extends Walkthrough {
   stop() {
     this.pause(true);
     this.clock.stop();
+    this.buffer = null;
+    this.bufferNode = null;
   }
 }

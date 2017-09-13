@@ -15,12 +15,16 @@ export default class Category extends Component {
   }
 
   render() {
-    const { category } = this.props;
+    const { category, goToArticle } = this.props;
     const { expanded } = this.state;
 
     return (
-      <div className={classNames('category', { expanded })}>
-        <a className="category-title" onClick={this.toggleExpand}>
+      <div className={classNames('help-desk__category', { expanded })}>
+        <a
+          href="#"
+          className="help-desk__category-title"
+          onClick={this.toggleExpand}
+        >
           {expanded ? (
             <svg viewBox="0 0 5 1">
               <rect x="0" y="0" width="5" height="1" />
@@ -32,14 +36,19 @@ export default class Category extends Component {
           )}
           {category.title}
         </a>
-        <div className="items">
+        <div className="help-desk__faq-items">
           {category.categories &&
             category.categories.map((cat, i) => (
               <Category category={cat} key={i} />
             ))}
           {category.articles &&
             category.articles.map((article, i) => (
-              <a className="article-title" key={i}>
+              <a
+                href="#"
+                onClick={() => goToArticle(article)}
+                className="help-desk__article-title"
+                key={i}
+              >
                 {article.title}
               </a>
             ))}

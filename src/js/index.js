@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { HotKeys } from 'react-hotkeys';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -59,6 +60,11 @@ class HelpDesk extends Component {
         ? this.props.expanded
         : this.state.expanded;
 
+    let onClose = this.onClose;
+    if (typeof this.props.expanded != 'undefined') {
+      onClose = this.props.onClose;
+    }
+
     return (
       <div
         className={classNames('help-desk', {
@@ -66,7 +72,7 @@ class HelpDesk extends Component {
           'help-desk--expanded': isExpanded
         })}
       >
-        {children}
+        <HotKeys handlers={{ esc: onClose }}>{children}</HotKeys>
       </div>
     );
   }

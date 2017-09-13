@@ -18,6 +18,7 @@ export default class Walkthrough extends Component {
     };
 
     this.handlePopoverClick = this.handlePopoverClick.bind(this);
+    this.requestClosePopover = this.requestClosePopover.bind(this);
     this.closePopover = this.closePopover.bind(this);
     this.playPause = this.playPause.bind(this);
   }
@@ -59,6 +60,15 @@ export default class Walkthrough extends Component {
         }
       });
     }
+
+    // Attach a method to the window to start a walkthrough
+    window.helpDeskWalkthrough = {
+      run: name => this.runWalkthrough(name)
+    };
+  }
+
+  componentWillUnmount() {
+    window.helpDeskWalkthrough = null;
   }
 
   runWalkthrough(name) {
@@ -69,6 +79,10 @@ export default class Walkthrough extends Component {
       if (walkthrough.type == 'audio') {
         // Create new audio walkthrough
         this.walkthrough = new AudioWalkthrough(walkthrough);
+        this.setState({ loading: true });
+        this.walkthrough.onStart(() => {
+          this.setState({ audioPlaying: true, loading: false });
+        });
         this.walkthrough.onCreateHighlight(highlight => {
           this.setState({
             highlights: [...this.state.highlights, highlight]
@@ -83,7 +97,9 @@ export default class Walkthrough extends Component {
         // Create text-based walkthrough
       }
 
-      this.walkthrough.onComplete(() => this.setState({ isRunning: false }));
+      this.walkthrough.onComplete(() => {
+        this.setState({ audioPlaying: false, isRunning: false });
+      });
 
       this.setState({ isRunning: name }, () => this.walkthrough.start());
     }
@@ -91,9 +107,16 @@ export default class Walkthrough extends Component {
 
   handlePopoverClick() {
     const popoverName = this.state.popoverName;
-    this.setState({ popover: false }, () => {
+    this.requestClosePopover(() => {
       this.runWalkthrough(popoverName);
     });
+  }
+
+  requestClosePopover(cb) {
+    if (this.props.onWalkthroughIgnore) {
+      this.props.onWalkthroughIgnore(this.state.popoverName);
+    }
+    this.setState({ popover: false }, cb);
   }
 
   closePopover() {
@@ -112,7 +135,14 @@ export default class Walkthrough extends Component {
 
   render() {
     const { walkthroughs } = this.props;
-    const { audio, highlights, isRunning, popover, popoverName } = this.state;
+    const {
+      audioPlaying,
+      highlights,
+      loading,
+      isRunning,
+      popover,
+      popoverName
+    } = this.state;
 
     const popoverWalkthrough = popoverName ? walkthroughs[popoverName] : null;
     const activeWalkthrough = isRunning ? walkthroughs[isRunning] : null;
@@ -153,6 +183,7 @@ export default class Walkthrough extends Component {
           {state => (
             <Popover
               onClick={this.handlePopoverClick}
+              onClose={() => this.requestClosePopover()}
               walkthrough={popoverWalkthrough}
               className={state}
             />
@@ -166,7 +197,13 @@ export default class Walkthrough extends Component {
           unmountOnExit={true}
         >
           {state => (
-            <AudioPlayer onPlayPause={this.playPause} className={state} />
+            <AudioPlayer
+              walkthrough={this.walkthrough}
+              playing={audioPlaying}
+              loading={loading}
+              onPlayPause={this.playPause}
+              className={state}
+            />
           )}
         </Transition>
       </div>

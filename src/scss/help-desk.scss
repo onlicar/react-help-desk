@@ -26,13 +26,19 @@
         z-index: 9999;
         top: 0;
         bottom: 0;
-        right: -$help-desk-width;
-        width: $help-desk-width;
-        box-shadow: -3px 0 15px 0 rgba(#000, 0.25);
+        right: -100vw;
+        width: 100vw;
         background: $help-desk-content-background;
         transition: all $help-desk-duration $help-desk-timing;
 
+        @media(min-width: $help-desk-width) {
+            right: -$help-desk-width;
+            width: $help-desk-width;
+        }
+
         > div {
+            display: flex;
+            flex-direction: column;
             height: 100%;
         }
 
@@ -48,36 +54,6 @@
                 margin: 0;
                 font-size: 16px;
                 line-height: 48px;
-            }
-            .help-desk__back, .help-desk__close {
-                opacity: 0.6;
-                position: absolute;
-                top: 0;
-                height: 48px;
-                padding: 0 25px;
-                border: none;
-                outline: none;
-                background: none;
-                font-size: 32px;
-                transition: opacity 0.2s;
-
-                svg {
-                    position: relative;
-                    top: -2px;
-                    width: 14px;
-                    height: 14px;
-                    fill: $help-desk-header-color;
-                }
-
-                &:hover, &:focus {
-                    opacity: 1;
-                }
-            }
-            .help-desk__back {
-                left: 0;
-            }
-            .help-desk__close {
-                right: 0;
             }
         }
 
@@ -147,11 +123,53 @@
 
     &.help-desk--expanded {
         .help-desk__menu {
-            transform: translateX(-$help-desk-width) translateY(-50%);
+            transform: translateX(-100vw) translateY(-50%);
             box-shadow: -6px 0 15px 0 rgba(#000, 0.15);
         }
         .help-desk__content {
-            transform: translateX(-$help-desk-width);
+            transform: translateX(-100vw);
+        }
+
+        @media(min-width: $help-desk-width) {
+            .help-desk__menu {
+                transform: translateX(-$help-desk-width) translateY(-50%);
+                box-shadow: -6px 0 15px 0 rgba(#000, 0.15);
+            }
+            .help-desk__content {
+                transform: translateX(-$help-desk-width);
+                box-shadow: -3px 0 15px 0 rgba(#000, 0.25);
+            }
         }
     }
+}
+
+.help-desk__back, .help-desk__close {
+    opacity: 0.6;
+    position: absolute;
+    top: 0;
+    height: 48px;
+    padding: 0 25px;
+    border: none;
+    outline: none;
+    background: none;
+    font-size: 32px;
+    transition: opacity 0.2s;
+
+    svg {
+        position: relative;
+        top: -2px;
+        width: 14px;
+        height: 14px;
+        fill: $help-desk-header-color;
+    }
+
+    &:hover, &:focus {
+        opacity: 1;
+    }
+}
+.help-desk__back {
+    left: 0;
+}
+.help-desk__close {
+    right: 0;
 }
