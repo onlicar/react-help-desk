@@ -7,6 +7,7 @@ import AudioPlayer from './AudioPlayer';
 import Popover from './Popover';
 import Underline from './highlights/Underline';
 import Solo from './highlights/Solo';
+import HighlightClass from './highlights/HighlightClass';
 
 const getParentElement = props => {
   let parent = props.parentSelector();
@@ -189,6 +190,13 @@ export default class WalkthroughPortal extends Component {
           const offset = highlight.el.getBoundingClientRect();
 
           switch (highlight.type) {
+            case 'className':
+              return (
+                <HighlightClass
+                  highlight={highlight}
+                  key={i + '-' + highlight.id}
+                />
+              );
             case 'underline':
               return (
                 <Underline
