@@ -3,11 +3,11 @@
 .walkthrough-wrapper {
     display: none;
     position: fixed;
+    z-index: 20000;
     top: 0;
     right: 0;
-    bottom: 0;
     left: 0;
-    z-index: 20000;
+    bottom: 0;
     pointer-events: none;
 
     &__active {
@@ -17,9 +17,34 @@
 
 .walkthough__highlight {
     position: absolute;
-    width: 300px;
-    height: 50px;
-    border: 5px solid #F00;
+
+    &.walkthrough__highlight--underline {
+        svg {
+            width: 100%;
+            height: 100%;
+
+            path {
+                fill: none;
+                stroke: #F00;
+            }
+        }
+    }
+    &.walkthrough__highlight--solo {
+        .solo-darken {
+            position: fixed;
+            background: rgba(#000, 0.5);
+            animation: 0.15s helpDeskFadeIn;
+        }
+    }
+}
+
+@keyframes helpDeskFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .walkthrough-popover {
@@ -114,7 +139,7 @@
 
     &.loading {
         .walkthrough-player__btn svg {
-            animation: 3s helpDeskSpin;
+            animation: 1.5s linear helpDeskSpin infinite;
         }
     }
 }

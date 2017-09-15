@@ -1,212 +1,59 @@
 import React, { Component } from 'react';
-import WAAClock from 'waaclock';
-import Transition from 'react-transition-group/Transition';
-import classNames from 'classnames';
+import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 
-import AudioWalkthrough from 'walkthrough/AudioWalkthrough';
-import AudioPlayer from './AudioPlayer';
-import Popover from './Popover';
+import WalkthroughPortal from './WalkthroughPortal';
+
+const renderSubtreeIntoContainer = ReactDOM.unstable_renderSubtreeIntoContainer;
 
 export default class Walkthrough extends Component {
-  constructor(props) {
-    super(props);
+  static propTypes = { parentSelector: PropTypes.func };
 
-    this.state = {
-      highlights: [],
-      index: 0,
-      isRunning: false
-    };
+  static defaultProps = { parentSelector: () => document.body };
 
-    this.handlePopoverClick = this.handlePopoverClick.bind(this);
-    this.requestClosePopover = this.requestClosePopover.bind(this);
-    this.closePopover = this.closePopover.bind(this);
-    this.playPause = this.playPause.bind(this);
+  componentDidMount() {
+    this.node = document.createElement('div');
+
+    const parent = this.props.parentSelector();
+    parent.appendChild(this.node);
+
+    this.renderPortal(this.props);
   }
 
-  // componentWillMount() {
-  //   const { autoStart, completed } = this.props;
+  componentWillReceiveProps(newProps) {
+    const currentParent = this.props.parentSelector();
+    const newParent = newProps.parentSelector();
 
-  //   const isCompleted = completed && completed.indexOf(autoStart) == -1;
-  //   if (autoStart && (!completed || isCompleted)) {
-  //     window.setTimeout(() => this.runWalkthrough(autoStart), 10000);
-  //   }
-  // }
-
-  componentWillMount() {
-    const { walkthroughs } = this.props;
-
-    if (typeof walkthroughs != 'undefined') {
-      Object.keys(walkthroughs).forEach(name => {
-        const walkthrough = walkthroughs[name];
-
-        const url = walkthrough.trigger.url;
-        if (url && url != window.location.pathname) {
-          return;
-        }
-
-        const run = () => this.runWalkthrough(name);
-
-        switch (walkthrough.trigger.type) {
-          case 'auto':
-            if (walkthrough.trigger.delay) {
-              window.setTimeout(run, walkthrough.trigger.delay);
-            } else {
-              run();
-            }
-            break;
-          case 'popover':
-            this.setState({ popover: true, popoverName: name });
-            break;
-        }
-      });
+    if (newParent !== currentParent) {
+      currentParent.removeChild(this.node);
+      newParent.appendChild(this.node);
     }
 
-    // Attach a method to the window to start a walkthrough
-    window.helpDeskWalkthrough = {
-      run: name => this.runWalkthrough(name)
-    };
+    this.renderPortal(newProps);
   }
 
   componentWillUnmount() {
-    window.helpDeskWalkthrough = null;
-  }
-
-  runWalkthrough(name) {
-    // TODO: Allow selection of which type of walkthrough to run from popover
-
-    const walkthrough = this.props.walkthroughs[name];
-    if (typeof walkthrough != 'undefined') {
-      if (walkthrough.type == 'audio') {
-        // Create new audio walkthrough
-        this.walkthrough = new AudioWalkthrough(walkthrough);
-        this.setState({ loading: true });
-        this.walkthrough.onStart(() => {
-          this.setState({ audioPlaying: true, loading: false });
-        });
-        this.walkthrough.onCreateHighlight(highlight => {
-          this.setState({
-            highlights: [...this.state.highlights, highlight]
-          });
-        });
-        this.walkthrough.onRemoveHighlight(id => {
-          this.setState({
-            highlights: this.state.highlights.filter(h => h.id != id)
-          });
-        });
-      } else {
-        // Create text-based walkthrough
-      }
-
-      this.walkthrough.onComplete(() => {
-        this.setState({ audioPlaying: false, isRunning: false });
-      });
-
-      this.setState({ isRunning: name }, () => this.walkthrough.start());
+    if (!this.node || !this.portal) {
+      return;
     }
+
+    ReactDOM.unmountComponentAtNode(this.node);
+    const parent = this.props.parentSelector();
+    parent.removeChild(this.node);
   }
 
-  handlePopoverClick() {
-    const popoverName = this.state.popoverName;
-    this.requestClosePopover(() => {
-      this.runWalkthrough(popoverName);
-    });
-  }
-
-  requestClosePopover(cb) {
-    if (this.props.onWalkthroughIgnore) {
-      this.props.onWalkthroughIgnore(this.state.popoverName);
-    }
-    this.setState({ popover: false }, cb);
-  }
-
-  closePopover() {
-    this.setState({ popoverName: null });
-  }
-
-  playPause() {
-    if (this.state.isRunning) {
-      const walkthrough = this.props.walkthroughs[this.state.isRunning];
-      if (walkthrough.type == 'audio') {
-        const audioPlaying = this.walkthrough.playPause();
-        this.setState({ audioPlaying });
-      }
-    }
+  renderPortal(props) {
+    this.portal = renderSubtreeIntoContainer(
+      this,
+      <WalkthroughPortal
+        parentSelector={this.props.parentSelector}
+        {...props}
+      />,
+      this.node
+    );
   }
 
   render() {
-    const { walkthroughs } = this.props;
-    const {
-      audioPlaying,
-      highlights,
-      loading,
-      isRunning,
-      popover,
-      popoverName
-    } = this.state;
-
-    const popoverWalkthrough = popoverName ? walkthroughs[popoverName] : null;
-    const activeWalkthrough = isRunning ? walkthroughs[isRunning] : null;
-
-    return (
-      <div
-        className={classNames('walkthrough-wrapper', {
-          'walkthrough-wrapper__active': isRunning || popover
-        })}
-      >
-        {highlights.map((highlight, i) => {
-          const offset = highlight.el.getBoundingClientRect();
-
-          return (
-            <div
-              className={classNames(
-                'walkthough__highlight',
-                `walkthrough__highlight--${highlight.type}`
-              )}
-              style={{
-                top: offset.top,
-                left: offset.left,
-                width: offset.width,
-                height: offset.height
-              }}
-              key={i + '-' + highlight.id}
-            />
-          );
-        })}
-        <Transition
-          in={popover}
-          timeout={400}
-          appear={true}
-          onExited={this.closePopover}
-          mountOnEnter={true}
-          unmountOnExit={true}
-        >
-          {state => (
-            <Popover
-              onClick={this.handlePopoverClick}
-              onClose={() => this.requestClosePopover()}
-              walkthrough={popoverWalkthrough}
-              className={state}
-            />
-          )}
-        </Transition>
-        <Transition
-          in={activeWalkthrough && activeWalkthrough.type == 'audio'}
-          timeout={200}
-          appear={true}
-          mountOnEnter={true}
-          unmountOnExit={true}
-        >
-          {state => (
-            <AudioPlayer
-              walkthrough={this.walkthrough}
-              playing={audioPlaying}
-              loading={loading}
-              onPlayPause={this.playPause}
-              className={state}
-            />
-          )}
-        </Transition>
-      </div>
-    );
+    return null;
   }
 }

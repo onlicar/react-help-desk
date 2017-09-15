@@ -7,11 +7,13 @@ $help-desk-header-background: $help-desk-menu-background !default;
 $help-desk-header-color: $help-desk-menu-color !default;
 $help-desk-content-background: desaturate(lighten($help-desk-header-background, 53%), 25%) !default;
 
-$help-desk-success: #39C5A5;
-$help-desk-danger: #FF7C7C;
+$help-desk-success: #39C5A5 !default;
+$help-desk-danger: #FF7C7C !default;
 
 $help-desk-duration: 0.4s !default;
 $help-desk-timing: cubic-bezier(0.55, 0, 0.1, 1) !default;
+
+$walkthrough-highlight-underline: $help-desk-menu-background !default;
 
 $walkthrough-popover-background: $help-desk-menu-background !default;
 $walkthrough-popover-color: $help-desk-menu-color !default;

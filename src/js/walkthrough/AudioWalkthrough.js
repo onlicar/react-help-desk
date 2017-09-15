@@ -1,11 +1,12 @@
 import WAAClock from 'waaclock';
-import bufferLoader from '../utils/buffer-loader';
 
+import bufferLoader from '../utils/buffer-loader';
+import isElementInViewport from '../utils/element-viewport';
 import Walkthrough from './Walkthrough';
 
 export default class AudioWalkthrough extends Walkthrough {
-  constructor(walkthrough) {
-    super(walkthrough);
+  constructor(walkthrough, options) {
+    super(walkthrough, options);
 
     this.highlight_ids = [];
 
@@ -97,6 +98,18 @@ export default class AudioWalkthrough extends Walkthrough {
   }
 
   createHighlight(step, start, end) {
+    // Check if element is in view 500ms before step.time
+    this.events.push(
+      this.clock.callbackAtTime(() => {
+        const elements = document.querySelectorAll(step.element);
+        // Check if the first element is in view, if not, scroll to it
+        const outsideViewport = !isElementInViewport(elements[0]);
+        if (elements.length && outsideViewport) {
+          this.scrollTo(elements[0]);
+        }
+      }, start - 0.5)
+    );
+
     // Create highlights when step.time is reached
     this.events.push(
       this.clock.callbackAtTime(() => {
@@ -106,6 +119,7 @@ export default class AudioWalkthrough extends Walkthrough {
             id: this.generateHighlightId(),
             el,
             type: step.highlightType,
+            size: step.highlightSize,
             duration: step.duration
           };
           this.highlight_ids.push(highlight.id);
