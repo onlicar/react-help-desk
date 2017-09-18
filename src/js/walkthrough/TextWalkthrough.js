@@ -33,4 +33,8 @@ export default class TextWalkthrough extends Walkthrough {
       window.setTimeout(() => this.handleCreate(modal), 10);
     }
   }
+
+  skip() {
+    this.handleComplete();
+  }
 }

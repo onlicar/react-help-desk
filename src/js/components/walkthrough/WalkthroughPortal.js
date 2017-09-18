@@ -37,6 +37,7 @@ export default class WalkthroughPortal extends Component {
     this.playPause = this.playPause.bind(this);
     this.nextStep = this.nextStep.bind(this);
     this.prevStep = this.prevStep.bind(this);
+    this.skip = this.skip.bind(this);
   }
 
   // componentWillMount() {
@@ -149,7 +150,7 @@ export default class WalkthroughPortal extends Component {
 
       this.walkthrough.onComplete(() => {
         this.detachScrollListener();
-        this.setState({ audioPlaying: false, isRunning: false });
+        this.setState({ audioPlaying: false, graphics: [], isRunning: false });
       });
 
       this.setState(
@@ -206,6 +207,12 @@ export default class WalkthroughPortal extends Component {
     }
   }
 
+  skip() {
+    if (this.walkthrough && this.walkthrough.skip) {
+      this.walkthrough.skip();
+    }
+  }
+
   render() {
     const { history, walkthroughs } = this.props;
     const {
@@ -254,6 +261,7 @@ export default class WalkthroughPortal extends Component {
                   offset={offset}
                   onNext={this.nextStep}
                   onPrev={this.prevStep}
+                  onSkip={this.skip}
                   key={key}
                 />
               );
