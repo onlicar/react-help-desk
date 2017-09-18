@@ -23,15 +23,6 @@ export default class AudioWalkthrough extends Walkthrough {
     this.audioCurrentTime = 0;
   }
 
-  onCreateHighlight(func) {
-    this.handleCreateHighlight = func;
-  }
-  onRemoveHighlight(func) {
-    this.handleRemoveHighlight = func;
-  }
-  onComplete(func) {
-    this.handleComplete = func;
-  }
   onStart(func) {
     this.handleStart = func;
   }
@@ -74,21 +65,31 @@ export default class AudioWalkthrough extends Walkthrough {
     this.clock.start();
 
     // Clear any existing highlights
-    this.highlight_ids.forEach(id => this.handleRemoveHighlight(id));
+    this.highlight_ids.forEach(id => this.handleRemove(id));
 
     this.walkthrough.steps.forEach((step, i) => {
-      // TODO if step.type == highlight
-
-      const stepLength = (step.time + step.duration) / 1000;
-      const end = now - this.audioCurrentTime + stepLength;
-      const currTime = this.audioCurrentTime;
-      if (step.time / 1000 < currTime && stepLength > currTime) {
-        // Create highlights if we paused in the middle of one
-        this.createHighlight(step, now, end);
-      } else {
-        // Schedule a highlight to start
-        const start = now - this.audioCurrentTime + step.time / 1000;
-        this.createHighlight(step, start, end);
+      switch (step.type) {
+        case 'url':
+          const start = now - this.audioCurrentTime + step.time / 1000;
+          this.events.push(
+            this.clock.callbackAtTime(() => {
+              this.options.history.push(step.url);
+            }, start)
+          );
+          break;
+        default:
+          const stepLength = (step.time + step.duration) / 1000;
+          const end = now - this.audioCurrentTime + stepLength;
+          const currTime = this.audioCurrentTime;
+          if (step.time / 1000 < currTime && stepLength > currTime) {
+            // Create highlights if we paused in the middle of one
+            this.createHighlight(step, now, end);
+          } else {
+            // Schedule a highlight to start
+            const start = now - this.audioCurrentTime + step.time / 1000;
+            this.createHighlight(step, start, end);
+          }
+          break;
       }
     });
 
@@ -123,7 +124,7 @@ export default class AudioWalkthrough extends Walkthrough {
             duration: step.duration
           };
           this.highlight_ids.push(highlight.id);
-          this.handleCreateHighlight(highlight);
+          this.handleCreate(highlight);
         });
       }, start)
     );
@@ -131,7 +132,7 @@ export default class AudioWalkthrough extends Walkthrough {
     // Remove highlights when the step.duration is over
     this.events.push(
       this.clock.callbackAtTime(() => {
-        this.highlight_ids.forEach(id => this.handleRemoveHighlight(id));
+        this.highlight_ids.forEach(id => this.handleRemove(id));
       }, end)
     );
   }
@@ -193,9 +194,7 @@ export default class AudioWalkthrough extends Walkthrough {
     this.buffer = null;
     this.bufferNode = null;
     this.clock.stop();
-    if (typeof this.handleComplete == 'function') {
-      this.handleComplete();
-    }
+    this.handleComplete();
   }
 
   stop() {

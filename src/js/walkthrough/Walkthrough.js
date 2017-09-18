@@ -7,6 +7,18 @@ export default class Walkthrough {
     this.options = options;
   }
 
+  onCreate(func) {
+    this.handleCreate = func;
+  }
+
+  onRemove(func) {
+    this.handleRemove = func;
+  }
+
+  onComplete(func) {
+    this.handleComplete = func;
+  }
+
   scrollTo(el) {
     const tolerance = this.options.scrollOffset
       ? this.options.scrollOffset + 20

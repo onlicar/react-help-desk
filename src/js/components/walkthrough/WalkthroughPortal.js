@@ -3,11 +3,13 @@ import Transition from 'react-transition-group/Transition';
 import classNames from 'classnames';
 
 import AudioWalkthrough from 'walkthrough/AudioWalkthrough';
+import TextWalkthrough from 'walkthrough/TextWalkthrough';
 import AudioPlayer from './AudioPlayer';
 import Popover from './Popover';
 import Underline from './highlights/Underline';
 import Solo from './highlights/Solo';
 import HighlightClass from './highlights/HighlightClass';
+import TextModal from './highlights/TextModal';
 
 const getParentElement = props => {
   let parent = props.parentSelector();
@@ -23,7 +25,7 @@ export default class WalkthroughPortal extends Component {
     super(props);
 
     this.state = {
-      highlights: [],
+      graphics: [],
       index: 0,
       isRunning: false
     };
@@ -33,6 +35,8 @@ export default class WalkthroughPortal extends Component {
     this.requestClosePopover = this.requestClosePopover.bind(this);
     this.closePopover = this.closePopover.bind(this);
     this.playPause = this.playPause.bind(this);
+    this.nextStep = this.nextStep.bind(this);
+    this.prevStep = this.prevStep.bind(this);
   }
 
   // componentWillMount() {
@@ -86,7 +90,7 @@ export default class WalkthroughPortal extends Component {
   }
 
   handleScroll(e) {
-    // Update the position of highlights
+    // Update the position of graphics
     this.setState({ scroll: e.timeStamp });
   }
 
@@ -100,48 +104,68 @@ export default class WalkthroughPortal extends Component {
     parent.removeEventListener('scroll', this.handleScroll);
   }
 
-  runWalkthrough(name) {
+  runWalkthrough(name, type = null) {
     this.attachScrollListener();
 
     const { options } = this.props;
     // TODO: Allow selection of which type of walkthrough to run from popover
 
+    options.history = this.props.history;
+
     const walkthrough = this.props.walkthroughs[name];
     if (typeof walkthrough != 'undefined') {
-      if (walkthrough.type == 'audio') {
+      if (type == null) {
+        if (Array.isArray(walkthrough.type)) {
+          type = walkthrough.type[0];
+        } else {
+          type = walkthrough.type;
+        }
+      }
+
+      if (type == 'audio') {
         // Create new audio walkthrough
         this.walkthrough = new AudioWalkthrough(walkthrough, options);
         this.setState({ loading: true });
         this.walkthrough.onStart(() => {
           this.setState({ audioPlaying: true, loading: false });
         });
-        this.walkthrough.onCreateHighlight(highlight => {
-          this.setState({
-            highlights: [...this.state.highlights, highlight]
-          });
-        });
-        this.walkthrough.onRemoveHighlight(id => {
-          this.setState({
-            highlights: this.state.highlights.filter(h => h.id != id)
-          });
-        });
       } else {
         // Create text-based walkthrough
+        this.walkthrough = new TextWalkthrough(walkthrough, options);
       }
+
+      this.walkthrough.onCreate(item => {
+        this.setState({
+          graphics: [...this.state.graphics, item]
+        });
+      });
+      this.walkthrough.onRemove(id => {
+        this.setState({
+          graphics: this.state.graphics.filter(
+            g => (Array.isArray(id) ? id.indexOf(g.id) == -1 : g.id != id)
+          )
+        });
+      });
 
       this.walkthrough.onComplete(() => {
         this.detachScrollListener();
         this.setState({ audioPlaying: false, isRunning: false });
       });
 
-      this.setState({ isRunning: name }, () => this.walkthrough.start());
+      this.setState(
+        {
+          isRunning: name,
+          step: 0
+        },
+        () => this.walkthrough.start()
+      );
     }
   }
 
-  handlePopoverClick() {
+  handlePopoverClick(type) {
     const popoverName = this.state.popoverName;
     this.requestClosePopover(() => {
-      this.runWalkthrough(popoverName);
+      this.runWalkthrough(popoverName, type);
     });
   }
 
@@ -166,15 +190,32 @@ export default class WalkthroughPortal extends Component {
     }
   }
 
+  nextStep() {
+    const step = this.state.step + 1;
+    this.setState({ step });
+    if (this.walkthrough && this.walkthrough.goToStep) {
+      this.walkthrough.goToStep(step);
+    }
+  }
+
+  prevStep() {
+    const step = this.state.step - 1;
+    this.setState({ step });
+    if (this.walkthrough && this.walkthrough.goToStep) {
+      this.walkthrough.goToStep(step);
+    }
+  }
+
   render() {
-    const { walkthroughs } = this.props;
+    const { history, walkthroughs } = this.props;
     const {
       audioPlaying,
-      highlights,
+      graphics,
       loading,
       isRunning,
       popover,
-      popoverName
+      popoverName,
+      step
     } = this.state;
 
     const popoverWalkthrough = popoverName ? walkthroughs[popoverName] : null;
@@ -186,33 +227,42 @@ export default class WalkthroughPortal extends Component {
           'walkthrough-wrapper__active': isRunning || popover
         })}
       >
-        {highlights.map((highlight, i) => {
-          const offset = highlight.el.getBoundingClientRect();
+        {graphics.map((graphic, i) => {
+          let offset = {};
+          if (graphic.el) {
+            offset = graphic.el.getBoundingClientRect();
+          }
+          const key = i + '-' + graphic.id;
 
-          switch (highlight.type) {
+          switch (graphic.type) {
             case 'className':
-              return (
-                <HighlightClass
-                  highlight={highlight}
-                  key={i + '-' + highlight.id}
-                />
-              );
+              return <HighlightClass highlight={graphic} key={key} />;
             case 'underline':
               return (
-                <Underline
-                  highlight={highlight}
-                  offset={offset}
-                  key={i + '-' + highlight.id}
-                />
+                <Underline highlight={graphic} offset={offset} key={key} />
               );
             case 'solo':
-              return <Solo offset={offset} key={i + '-' + highlight.id} />;
+              return <Solo offset={offset} key={key} />;
+            case 'text':
+              graphic.index = step;
+              return (
+                <TextModal
+                  step={graphic}
+                  totalSteps={
+                    activeWalkthrough && activeWalkthrough.steps.length
+                  }
+                  offset={offset}
+                  onNext={this.nextStep}
+                  onPrev={this.prevStep}
+                  key={key}
+                />
+              );
             default:
               return (
                 <div
                   className={classNames(
                     'walkthough__highlight',
-                    `walkthrough__highlight--${highlight.type}`
+                    `walkthrough__highlight--${graphic.type}`
                   )}
                   style={{
                     top: offset.top,
@@ -220,7 +270,7 @@ export default class WalkthroughPortal extends Component {
                     width: offset.width,
                     height: offset.height
                   }}
-                  key={i + '-' + highlight.id}
+                  key={key}
                 />
               );
           }

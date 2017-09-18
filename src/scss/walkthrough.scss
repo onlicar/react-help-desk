@@ -1,7 +1,6 @@
 @import "variables";
 
-.walkthrough-wrapper {
-    display: none;
+.walkthrough-wrapper, .walkthrough__text-overlay {
     position: fixed;
     z-index: 20000;
     top: 0;
@@ -9,6 +8,9 @@
     left: 0;
     bottom: 0;
     pointer-events: none;
+}
+.walkthrough-wrapper {
+    display: none;
 
     &__active {
         display: block;
@@ -52,10 +54,9 @@
 }
 
 .walkthrough-popover {
-    display: flex;
     position: absolute;
     top: 50%;
-    left: 50%;
+    left: 25%;
     border-radius: $help-desk-border-radius;
     background: $walkthrough-popover-background;
     color: $walkthrough-popover-color;
@@ -70,12 +71,29 @@
     }
 }
 
+.walkthrough-popover__title {
+    max-width: 300px;
+    margin: 0;
+    padding: 7px 35px 7px 10px;
+    font-size: 18px;
+    font-weight: normal;
+}
+
+.walkthrough-popover__options {
+    display: flex;
+}
+
 .walkthrough-popover__option {
     display: flex;
     align-items: center;
-    min-width: 200px;
-    padding: 15px;
+    flex-basis: 100%;
+    padding: 10px 15px;
     text-align: left;
+    transition: background-color 0.1s ease-in-out;
+
+    &:hover, &:focus {
+        background-color: darken($walkthrough-popover-background, 3%);
+    }
 
     svg {
         width: 32px;
@@ -87,7 +105,7 @@
 .walkthrough-popover__close {
     opacity: 0.6;
     position: absolute;
-    top: 3px;
+    top: 8px;
     right: 3px;
     transition: opacity 0.2s ease-in-out;
 
@@ -101,12 +119,6 @@
     }
 }
 
-.walkthrough-popover__title {
-    max-width: 300px;
-    margin: 0;
-    font-size: 18px;
-}
-
 @keyframes zoomIn {
     from {
         opacity: 0;
@@ -115,6 +127,68 @@
     50% {
         opacity: 1;
     }
+}
+
+.walkthrough__text-overlay {
+    background: none;
+}
+.walkthrough__text-modal {
+    position: absolute;
+    min-width: 300px;
+    max-width: 400px;
+    box-shadow: 0 0 8px rgba(#000, 0.2);
+    border-radius: $help-desk-border-radius;
+    outline: none;
+    background: #FFF;
+    pointer-events: all;
+
+    .walkthrough__btn-close {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        padding: 0;
+        border: none;
+        outline: none;
+        background: none;
+        color: #AAA;
+
+        svg {
+            width: 10px;
+        }
+    }
+}
+.walkthrough__text-modal-content {
+    padding: 15px;
+
+    h1 {
+        margin-top: 0;
+        font-size: 18px;
+        font-weight: normal;
+    }
+}
+.walkthrough__text-actions {
+    display: flex;
+    overflow: hidden;
+    border-bottom-left-radius: $help-desk-border-radius;
+    border-bottom-right-radius: $help-desk-border-radius;
+    background: #666;
+    color: #FFF;
+
+    p {
+        flex: 1;
+        margin: 10px;
+    }
+}
+.walkthrough__btn-step {
+    padding: 7px 15px;
+    border: none;
+    outline: none;
+    background: none;
+    color: inherit;
+}
+.walkthrough__btn-next {
+    background: $help-desk-success;
+    color: #FFF;
 }
 
 .walkthrough-player {
