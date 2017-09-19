@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import Transition from 'react-transition-group/Transition';
 import classNames from 'classnames';
 
-import AudioWalkthrough from 'walkthrough/AudioWalkthrough';
-import TextWalkthrough from 'walkthrough/TextWalkthrough';
+import AudioWalkthrough from '../../walkthrough/AudioWalkthrough';
+import TextWalkthrough from '../../walkthrough/TextWalkthrough';
 import AudioPlayer from './AudioPlayer';
 import Popover from './Popover';
 import Underline from './highlights/Underline';

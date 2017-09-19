@@ -57,6 +57,7 @@
     position: absolute;
     top: 50%;
     left: 25%;
+    transform: translateY(-50%);
     border-radius: $help-desk-border-radius;
     background: $walkthrough-popover-background;
     color: $walkthrough-popover-color;
