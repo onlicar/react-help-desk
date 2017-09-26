@@ -1,6 +1,6 @@
 {
   "name": "react-help-desk",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "💁 React Components for creating a help desk system",
   "main": "dist/js/index.js",
   "scripts": {
