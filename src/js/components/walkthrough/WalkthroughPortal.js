@@ -191,7 +191,10 @@ export default class WalkthroughPortal extends Component {
     }
   }
 
-  nextStep() {
+  nextStep(e) {
+    if (e) {
+      e.stopPropagation();
+    }
     const step = this.state.step + 1;
     this.setState({ step });
     if (this.walkthrough && this.walkthrough.goToStep) {
@@ -199,7 +202,10 @@ export default class WalkthroughPortal extends Component {
     }
   }
 
-  prevStep() {
+  prevStep(e) {
+    if (e) {
+      e.stopPropagation();
+    }
     const step = this.state.step - 1;
     this.setState({ step });
     if (this.walkthrough && this.walkthrough.goToStep) {
