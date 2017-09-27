@@ -241,7 +241,7 @@ export default class WalkthroughPortal extends Component {
         })}
       >
         {graphics.map((graphic, i) => {
-          let offset = {};
+          let offset = null;
           if (graphic.el) {
             offset = graphic.el.getBoundingClientRect();
           }
