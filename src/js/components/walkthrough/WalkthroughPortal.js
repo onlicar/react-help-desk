@@ -148,14 +148,27 @@ export default class WalkthroughPortal extends Component {
         });
       });
 
-      this.walkthrough.onComplete(() => {
+      this.walkthrough.onComplete(completed => {
         this.detachScrollListener();
-        this.setState({ audioPlaying: false, graphics: [], isRunning: false });
+        this.setState(
+          {
+            audioPlaying: false,
+            graphics: [],
+            isRunning: false
+          },
+          () => {
+            if (this.props.onComplete) {
+              this.props.onComplete(name, completed);
+            }
+            this.walkthrough = null;
+          }
+        );
       });
 
       this.setState(
         {
           isRunning: name,
+          popover: null,
           step: 0
         },
         () => this.walkthrough.start()
@@ -165,14 +178,14 @@ export default class WalkthroughPortal extends Component {
 
   handlePopoverClick(type) {
     const popoverName = this.state.popoverName;
-    this.requestClosePopover(() => {
+    this.requestClosePopover(false, () => {
       this.runWalkthrough(popoverName, type);
     });
   }
 
-  requestClosePopover(cb) {
-    if (this.props.onWalkthroughIgnore) {
-      this.props.onWalkthroughIgnore(this.state.popoverName);
+  requestClosePopover(ignored, cb) {
+    if (ignored && this.props.onComplete) {
+      this.props.onComplete(this.state.popoverName, false);
     }
     this.setState({ popover: false }, cb);
   }
@@ -196,10 +209,14 @@ export default class WalkthroughPortal extends Component {
       e.stopPropagation();
     }
     const step = this.state.step + 1;
-    this.setState({ step });
-    if (this.walkthrough && this.walkthrough.goToStep) {
-      this.walkthrough.goToStep(step);
-    }
+    this.setState({ step }, () => {
+      if (this.walkthrough && this.walkthrough.goToStep) {
+        const result = this.walkthrough.goToStep(step);
+        if (!result) {
+          this.nextStep();
+        }
+      }
+    });
   }
 
   prevStep(e) {
@@ -207,10 +224,14 @@ export default class WalkthroughPortal extends Component {
       e.stopPropagation();
     }
     const step = this.state.step - 1;
-    this.setState({ step });
-    if (this.walkthrough && this.walkthrough.goToStep) {
-      this.walkthrough.goToStep(step);
-    }
+    this.setState({ step }, () => {
+      if (this.walkthrough && this.walkthrough.goToStep) {
+        const result = this.walkthrough.goToStep(step);
+        if (!result) {
+          this.prevStep();
+        }
+      }
+    });
   }
 
   skip() {
@@ -300,7 +321,7 @@ export default class WalkthroughPortal extends Component {
           {state => (
             <Popover
               onClick={this.handlePopoverClick}
-              onClose={() => this.requestClosePopover()}
+              onClose={() => this.requestClosePopover(true)}
               walkthrough={popoverWalkthrough}
               className={state}
             />

@@ -1,10 +1,15 @@
 import React from 'react';
 import Modal from 'react-modal';
+import classNames from 'classnames';
+
+const caret_offset = 15;
 
 const TextModal = ({ offset, onNext, onPrev, onSkip, step, totalSteps }) => {
+  const place = step.place;
+  let modalOffset;
+
   if (offset) {
     // Calculate where to place the modal next to the element
-    const place = step.place;
     const middleVertical = offset.top + offset.height / 2;
     const middleHorizontal = offset.left + offset.width / 2;
     const translates = {
@@ -14,29 +19,35 @@ const TextModal = ({ offset, onNext, onPrev, onSkip, step, totalSteps }) => {
       right: [0, -50]
     };
 
-    offset = {
+    modalOffset = {
       top:
         place == 'top'
-          ? offset.top - 30
-          : place == 'bottom' ? offset.bottom + 30 : middleVertical,
+          ? offset.top - caret_offset
+          : place == 'bottom' ? offset.bottom + caret_offset : middleVertical,
       left:
         place == 'left'
-          ? offset.left - 30
-          : place == 'right' ? offset.right + 30 : middleHorizontal,
+          ? offset.left - caret_offset
+          : place == 'right' ? offset.right + caret_offset : middleHorizontal,
       transform: `translate(${translates[place][0]}%, ${translates[place][1]}%)`
     };
   } else {
     // Display the modal in the middle of the screen
-    offset = { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
+    modalOffset = {
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
+    };
   }
 
   return (
     <Modal
       isOpen={true}
       contentLabel={step.title}
-      className="walkthrough__text-modal"
+      className={classNames('walkthrough__text-modal', {
+        [`walkthrough__text-modal--${place}`]: place && offset
+      })}
       overlayClassName="walkthrough__text-overlay"
-      style={{ content: offset }}
+      style={{ content: modalOffset }}
     >
       <div className="walkthrough__text-modal-content">
         {step.title && <h1>{step.title}</h1>}

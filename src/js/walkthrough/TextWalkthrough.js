@@ -16,10 +16,14 @@ export default class TextWalkthrough extends Walkthrough {
     this.modal_ids = [];
 
     if (stepIndex + 1 > this.walkthrough.steps.length) {
-      this.handleComplete();
+      this.handleComplete(true);
     } else {
       const step = this.walkthrough.steps[stepIndex];
       const el = document.querySelector(step.element);
+
+      if (!el && step.element_skip) {
+        return false;
+      }
 
       const modal = {
         id: this.generateHighlightId(),
@@ -32,9 +36,11 @@ export default class TextWalkthrough extends Walkthrough {
       this.modal_ids.push(modal.id);
       window.setTimeout(() => this.handleCreate(modal), 10);
     }
+
+    return true;
   }
 
   skip() {
-    this.handleComplete();
+    this.handleComplete(false);
   }
 }

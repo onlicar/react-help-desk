@@ -1,0 +1,79 @@
+.walkthrough-player {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    left: 30px;
+    bottom: 0;
+    width: 320px;
+    height: 45px;
+    padding: 10px 15px;
+    border-top-left-radius: $help-desk-border-radius;
+    border-top-right-radius: $help-desk-border-radius;
+    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
+    background: $walkthrough-player-background;
+    color: $walkthrough-player-color;
+    pointer-events: all;
+    animation-fill-mode: both;
+
+    &.entering {
+        animation: 0.2s helpDeskSlideInUp;
+    }
+    &.exiting {
+        animation: 0.2s helpDeskSlideOutDown;
+    }
+
+    &.loading {
+        .walkthrough-player__btn svg {
+            animation: 1.5s linear helpDeskSpin infinite;
+        }
+    }
+}
+.walkthrough-player__btn {
+    display: flex;
+    align-items: center;
+    border: none;
+    outline: none;
+    background: none;
+
+    svg {
+        width: 20px;
+        height: 20px;
+    }
+}
+.walkthrough-player__progress {
+    flex: 1;
+    height: 4px;
+    margin-left: 8px;
+    background: rgba(#000, 0.05);
+}
+.walkthrough-player__progress-bar {
+    height: 4px;
+    background: $help-desk-menu-background;
+}
+
+@keyframes helpDeskSlideInUp {
+    from {
+        transform: translate3d(0, 100%, 0);
+        visibility: visible;
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+    }
+}
+@keyframes helpDeskSlideOutDown {
+    from {
+        transform: translate3d(0, 0, 0);
+    }
+    to {
+        visibility: hidden;
+        transform: translate3d(0, 100%, 0);
+    }
+}
+@keyframes helpDeskSpin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

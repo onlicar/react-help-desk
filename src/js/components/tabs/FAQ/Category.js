@@ -10,7 +10,8 @@ export default class Category extends Component {
     this.toggleExpand = this.toggleExpand.bind(this);
   }
 
-  toggleExpand() {
+  toggleExpand(e) {
+    e.preventDefault();
     this.setState({ expanded: !this.state.expanded });
   }
 
@@ -45,7 +46,10 @@ export default class Category extends Component {
             category.articles.map((article, i) => (
               <a
                 href="#"
-                onClick={() => goToArticle(article)}
+                onClick={e => {
+                  e.preventDefault();
+                  goToArticle(article);
+                }}
                 className="help-desk__article-title"
                 key={i}
               >

@@ -17,7 +17,7 @@ export default class Article extends Component {
   }
 
   handleRating(rating) {
-    this.props.onArticleRating(rating === 'up');
+    this.props.onArticleRating(this.props.article.title, rating === 'up');
     this.setState({ selected: rating });
     this._closeTask = window.setTimeout(() => {
       this.props.onClose();
