@@ -2,7 +2,7 @@
 
 > 💁 React Components for creating a help desk system
 
-![Preview GIF](https://i.imgur.com/6cXZSzQ.gif)
+![](https://i.imgur.com/vG8Z1j5.jpg)
 
 - Help Center tray
 - Searchable FAQ Articles
