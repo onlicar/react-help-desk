@@ -52,7 +52,6 @@
     "moveto": "git+https://github.com/onlicar/moveTo.git",
     "prop-types": "^15.5.10",
     "react-hotkeys": "^0.10.0",
-    "react-modal": "^2.3.2",
     "react-transition-group": "^2.2.0",
     "slugify": "^1.2.1",
     "sweet-scroll": "^2.2.1",

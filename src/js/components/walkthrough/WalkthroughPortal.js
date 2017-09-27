@@ -9,7 +9,7 @@ import Popover from './Popover';
 import Underline from './highlights/Underline';
 import Solo from './highlights/Solo';
 import HighlightClass from './highlights/HighlightClass';
-import TextModal from './highlights/TextModal';
+// import TextModal from './highlights/TextModal';
 
 const getParentElement = props => {
   let parent = props.parentSelector();
@@ -280,21 +280,21 @@ export default class WalkthroughPortal extends Component {
               );
             case 'solo':
               return <Solo offset={offset} key={key} />;
-            case 'text':
-              graphic.index = step;
-              return (
-                <TextModal
-                  step={graphic}
-                  totalSteps={
-                    activeWalkthrough && activeWalkthrough.steps.length
-                  }
-                  offset={offset}
-                  onNext={this.nextStep}
-                  onPrev={this.prevStep}
-                  onSkip={this.skip}
-                  key={key}
-                />
-              );
+            // case 'text':
+            //   graphic.index = step;
+            //   return (
+            //     <TextModal
+            //       step={graphic}
+            //       totalSteps={
+            //         activeWalkthrough && activeWalkthrough.steps.length
+            //       }
+            //       offset={offset}
+            //       onNext={this.nextStep}
+            //       onPrev={this.prevStep}
+            //       onSkip={this.skip}
+            //       key={key}
+            //     />
+            //   );
             default:
               return (
                 <div
