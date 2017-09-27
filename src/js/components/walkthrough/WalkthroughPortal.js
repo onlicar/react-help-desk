@@ -106,11 +106,13 @@ export default class WalkthroughPortal extends Component {
   }
 
   runWalkthrough(name, type = null) {
+    if (this.walkthrough) {
+      this.walkthrough.skip();
+    }
+
     this.attachScrollListener();
 
     const { options } = this.props;
-    // TODO: Allow selection of which type of walkthrough to run from popover
-
     options.history = this.props.history;
 
     const walkthrough = this.props.walkthroughs[name];
@@ -165,14 +167,15 @@ export default class WalkthroughPortal extends Component {
         );
       });
 
-      this.setState(
-        {
-          isRunning: name,
-          popover: null,
-          step: 0
-        },
-        () => this.walkthrough.start()
-      );
+      this.setState({ isRunning: name, popover: null, step: 0 }, () => {
+        const url = walkthrough.trigger.url;
+        if (url && url != window.location.pathname) {
+          this.props.history.push(url);
+          window.setTimeout(this.walkthrough.start, 500);
+        } else {
+          this.walkthrough.start();
+        }
+      });
     }
   }
 

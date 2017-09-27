@@ -194,13 +194,15 @@ export default class AudioWalkthrough extends Walkthrough {
     this.buffer = null;
     this.bufferNode = null;
     this.clock.stop();
-    this.handleComplete();
+    this.handleComplete(true);
   }
 
-  stop() {
+  skip() {
     this.pause(true);
     this.clock.stop();
     this.buffer = null;
     this.bufferNode = null;
+
+    super.skip();
   }
 }

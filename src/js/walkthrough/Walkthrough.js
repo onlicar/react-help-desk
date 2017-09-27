@@ -19,6 +19,10 @@ export default class Walkthrough {
     this.handleComplete = func;
   }
 
+  skip() {
+    this.handleComplete(false);
+  }
+
   scrollTo(el) {
     const tolerance = this.options.scrollOffset
       ? this.options.scrollOffset + 20

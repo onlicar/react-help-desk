@@ -39,8 +39,4 @@ export default class TextWalkthrough extends Walkthrough {
 
     return true;
   }
-
-  skip() {
-    this.handleComplete(false);
-  }
 }
