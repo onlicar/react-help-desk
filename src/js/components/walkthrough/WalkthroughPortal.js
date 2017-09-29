@@ -50,14 +50,19 @@ export default class WalkthroughPortal extends Component {
   // }
 
   componentWillMount() {
-    const { walkthroughs } = this.props;
+    const { completed, ignored, walkthroughs } = this.props;
 
     if (typeof walkthroughs != 'undefined') {
       Object.keys(walkthroughs).forEach(name => {
         const walkthrough = walkthroughs[name];
 
+        // Ignore if we're not on the correct trigger URL
         const url = walkthrough.trigger.url;
         if (url && url != window.location.pathname) {
+          return;
+        }
+        // Ignore if the walkthrough has already been completed or ignored
+        if (completed.indexOf(name) > -1 || ignored.indexOf(name) > -1) {
           return;
         }
 

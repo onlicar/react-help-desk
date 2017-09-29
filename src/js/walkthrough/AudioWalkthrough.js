@@ -10,6 +10,7 @@ export default class AudioWalkthrough extends Walkthrough {
 
     this.highlight_ids = [];
 
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
     this.audioContext = new AudioContext();
     this.clock = new WAAClock(this.audioContext);
     this.events = [];
