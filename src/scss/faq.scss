@@ -26,6 +26,7 @@
     display: block;
     margin-bottom: 20px;
     font-size: 16px;
+    color: inherit;
 
     svg {
         width: 10px;
@@ -91,7 +92,7 @@
         padding-right: 35px;
         font-size: 26px;
     }
-    img {
+    img, iframe {
         width: 100%;
     }
 }

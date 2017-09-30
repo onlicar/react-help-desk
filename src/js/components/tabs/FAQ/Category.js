@@ -40,16 +40,13 @@ export default class Category extends Component {
         <div className="help-desk__faq-items">
           {category.categories &&
             category.categories.map((cat, i) => (
-              <Category category={cat} key={i} />
+              <Category category={cat} key={i} goToArticle={goToArticle} />
             ))}
           {category.articles &&
             category.articles.map((article, i) => (
               <a
                 href="#"
-                onClick={e => {
-                  e.preventDefault();
-                  goToArticle(article);
-                }}
+                onClick={e => goToArticle(article, e)}
                 className="help-desk__article-title"
                 key={i}
               >

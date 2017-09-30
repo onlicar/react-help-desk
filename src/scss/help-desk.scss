@@ -3,6 +3,10 @@
 .help-desk {
     position: relative;
 
+    button {
+        cursor: pointer;
+    }
+
     .help-desk__menu {
         position: fixed;
         z-index: 10000;
@@ -144,6 +148,8 @@
 }
 
 .help-desk__back, .help-desk__close {
+    display: flex;
+    align-items: center;
     opacity: 0.6;
     position: absolute;
     top: 0;

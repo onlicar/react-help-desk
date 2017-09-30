@@ -34,7 +34,10 @@ export default class FAQ extends Component {
     this.setState({ searchValue: e.target.value, showArticle: false });
   }
 
-  goToArticle(article) {
+  goToArticle(article, e) {
+    if (e) {
+      e.preventDefault();
+    }
     const title = slugify(article.title).toLowerCase();
     this.context.onSelectTab(`${this.context.activeTab}.${title}`);
     this.setState({ showArticle: true, singleArticle: article });
@@ -62,8 +65,8 @@ export default class FAQ extends Component {
 
     // The FAQ Homepage can show a list of all articles
     // if it's simple or a list of categories
-    let articles = json.articles;
-    const categories = json.categories;
+    let articles = json.articles || [];
+    const categories = json.categories || [];
 
     if (search) {
       const searchFilter = searchValue.toLowerCase();
@@ -122,7 +125,7 @@ export default class FAQ extends Component {
             articles.map((article, i) => (
               <a
                 href="#"
-                onClick={() => this.goToArticle(article)}
+                onClick={e => this.goToArticle(article, e)}
                 className="help-desk__article-title"
                 key={i}
               >
