@@ -60,7 +60,7 @@
   },
   "dependencies": {
     "classnames": "^2.2.5",
-    "moveto": "git+https://github.com/onlicar/moveTo.git",
+    "moveto": "^1.7.0",
     "prop-types": "^15.5.10",
     "react-hotkeys": "^0.10.0",
     "react-modal": "^2.3.2",

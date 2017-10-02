@@ -9,6 +9,7 @@ $caret-offset: 15px;
     max-width: 400px;
     box-shadow: 0 0 8px rgba(#000, 0.2);
     outline: none;
+    transition: transform 0.15s ease-in;
     pointer-events: all;
 
     &--top, &--right, &--bottom, &--left {
